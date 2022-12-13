@@ -1,7 +1,7 @@
 function inboxList() {
   const content = document.querySelector('#content');
-  const newTaskBtn = document.createElement('button');
   const getTaskHistory = () => JSON.parse(localStorage.getItem('text'));
+  const newTaskBtn = document.createElement('button');
   const appendTaskBtn = () => {
     if (content.querySelector('.new-task-button') === null) {
       content.appendChild(newTaskBtn);
@@ -32,10 +32,11 @@ function inboxList() {
     taskText.classList.add('task-input');
     taskText.type = 'text';
     taskText.before(taskCheckBox);
+    taskText.focus();
     // dueDate.after(deleteTaskBtn);
     function createIdForTasks() {
       if (!taskContainer.id && getTaskHistory()) taskContainer.setAttribute('id', `${getTaskHistory().length - 1}`);
-      else if (!taskContainer.id && !getTaskHistory())taskContainer.setAttribute('id', '0');
+      else if (!taskContainer.id && !getTaskHistory()) taskContainer.setAttribute('id', '0');
       if (content.querySelector('.new-task-button') === null) appendTaskBtn();
     }
     function saveTasksLocalStorage(id) {
