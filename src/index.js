@@ -1,6 +1,5 @@
 import { compareAsc, format } from 'date-fns';
 import './style.css';
-// import'./styles.css';
 import createTask from './create-task';
 import { getTaskHistory, getTaskDateHistory } from './storage';
 
