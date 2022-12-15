@@ -5,10 +5,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script type="module" src="main.js"></script>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'
+  rel='stylesheet'
+  />
   <title>Document</title>
 </head>
 <body>
-  <div id="header">Todo-list</div>
+  <nav>
+  <div class="logo">
+    <i class='bx bx-menu menu-icon'></i>
+    <span class="logo-name">TodoList</span>
+  </div>
   <div id="sidebar">
     <div class="sidebar__inbox">
       <i class="gg-inbox"></i>
@@ -22,16 +29,17 @@
       <i class="gg-calendar-dates"></i>
       <p>Next 7 Days</p>
     </div>
-    <div class="sidebar__projects">Projects</div>
+    <div class="js-sidebar__projects">
+      <i class='bx bx-briefcase' ></i>
+      <span>Projects</span>
+    </div>
+    <button class="js-new-project">+ New Project</button>
   </div>
-  <div id="content">
-    <button class="js-new-task-button">+ Add a task</button>
-    <!-- <div class="js-task-container task-container">
-      <form action="" class="js-task-form task-form">
-        <input type="text" class="js-task-input task__input" placeholder="Write Your Task Here">
-        <input type="date" class="js-task-duedate task__date">
-      </form>
-    </div> -->
+</nav>
+<div id="content">
+  <section class="overlay"></section>
+    <div>Inbox</div>
+    <button class="js-new-task-button" id="task-button">+ Add a task</button>
   </div>
   <div id="footer">Footer</div>
 </body>

@@ -1,6 +1,11 @@
-import { saveTasksLocalStorage, removeTasksLocalStorage, changeTaskIdAfterDelete, getTaskHistory } from './storage';
+import {
+  saveTasksLocalStorage,
+  removeTasksLocalStorage,
+  changeTaskIdAfterDelete,
+  getTaskHistory,
+} from './storage';
 
-export default function createTask() {
+export default function createTask(task, date) {
   const content = document.querySelector('#content');
   const addTaskBtn = document.querySelector('.js-new-task-button');
   const taskForm = document.createElement('form');
@@ -9,51 +14,39 @@ export default function createTask() {
   const dueDate = document.createElement('input');
   const deleteTaskBtn = document.createElement('button');
   const taskContainer = document.createElement('div');
-  const blackLine = document.createElement('div');
-  function appendTask() {
-    content.appendChild(taskContainer);
-    taskContainer.after(addTaskBtn);
-    taskContainer.classList.add('js-task-container');
-    taskContainer.append(taskForm, deleteTaskBtn);
-    taskForm.classList.add('js-task-form');
-    taskForm.append(taskText, dueDate, taskCheckBox);
-    blackLine.classList.add('line');
-    deleteTaskBtn.classList.add('js-delete-task-button');
-    deleteTaskBtn.textContent = 'X';
-    deleteTaskBtn.type = 'button';
-    taskCheckBox.type = 'checkbox';
-    taskCheckBox.classList.add('js-task-checkbox');
-    dueDate.type = 'date';
-    dueDate.classList.add('js-task-date');
-    taskText.classList.add('js-task-input');
-    taskText.type = 'text';
-    taskText.before(taskCheckBox);
-    taskText.focus();
-  }
+  content.appendChild(taskContainer);
+  taskContainer.after(addTaskBtn);
+  taskContainer.classList.add('js-task-container');
+  taskContainer.append(taskForm, deleteTaskBtn);
+  taskForm.classList.add('js-task-form');
+  taskForm.append(taskText, dueDate, taskCheckBox);
+  deleteTaskBtn.classList.add('js-delete-task-button');
+  deleteTaskBtn.textContent = 'X';
+  taskCheckBox.type = 'checkbox';
+  taskCheckBox.classList.add('js-task-checkbox');
+  dueDate.type = 'date';
+  dueDate.classList.add('js-task-date');
+  dueDate.value = date;
+  taskText.classList.add('js-task-input');
+  taskText.type = 'text';
+  taskText.value = getTaskHistory() ? task || '' : '';
+  taskText.before(taskCheckBox);
+  if (!taskText.value) taskText.focus();
 
-  function createIdForTasks(element, id) {
-    if (!element.id) element.setAttribute('id', `${id - 1}`);
-    if (id === null) element.setAttribute('id', '0');
-  }
-
+  // setting up an id for each task. if it's the first task id is 0
+  if (getTaskHistory()) taskContainer.setAttribute('id', `${getTaskHistory().length}`);
+  else taskContainer.setAttribute('id', '0');
   function createTaskEventHandler() {
-    // e.preventDefault(() => taskForm.submit());
     saveTasksLocalStorage(taskText.value, dueDate.value, taskContainer.id);
-    createIdForTasks(taskContainer, getTaskHistory().length);
     taskText.blur();
   }
-  addTaskBtn.addEventListener('click', () => {
-    appendTask();
-    createTaskEventHandler();
-  });
-
   taskContainer.addEventListener('submit', (e) => {
     e.preventDefault(() => taskForm.submit());
-    createTaskEventHandler(e);
+    createTaskEventHandler();
   });
   taskForm.addEventListener('focusout', (e) => {
     e.preventDefault(() => taskForm.submit());
-    createTaskEventHandler(e);
+    createTaskEventHandler();
   });
   deleteTaskBtn.addEventListener('click', () => {
     removeTasksLocalStorage(taskContainer.id, taskContainer);
@@ -71,20 +64,4 @@ export default function createTask() {
       dueDate.readOnly = false;
     }
   });
-  return {
-    content,
-    taskContainer,
-    taskForm,
-    taskText,
-    dueDate,
-    deleteTaskBtn,
-    taskCheckBox,
-    appendTask,
-  };
 }
-
-// export function ChangeTaskStatus(e) {
-//   // const task = createTask;
-//   // e.target.id.style.backgroundColor = "red";
-//   console.log(e)
-// }

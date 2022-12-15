@@ -1,6 +1,13 @@
+import { setDate } from "date-fns";
+
+export const getTaskHistory = (project = 'inbox') => JSON.parse(localStorage.getItem(`${project}-task`)) || [];
+export const getTaskDateHistory = (project = 'inbox') => JSON.parse(localStorage.getItem(`${project}-task-date`)) || [];
+const taskHistory = getTaskHistory();
+const dueDateHistory = getTaskDateHistory();
+const setTask = (project = 'inbox') => localStorage.setItem(`${project}-task`, JSON.stringify(taskHistory));
+const setTaskDate = (project = 'inbox') => localStorage.setItem(`${project}-task-date`, JSON.stringify(dueDateHistory));
+
 export function saveTasksLocalStorage(taskInput, taskDueDate, taskId) {
-  const taskHistory = JSON.parse(localStorage.getItem('text')) || [];
-  const dueDateHistory = JSON.parse(localStorage.getItem('due-date')) || [];
   if (taskId) {
     taskHistory.splice(taskId, 1, taskInput);
     dueDateHistory.splice(taskId, 1, taskDueDate);
@@ -8,28 +15,22 @@ export function saveTasksLocalStorage(taskInput, taskDueDate, taskId) {
     taskHistory.push(taskInput);
     dueDateHistory.push(taskDueDate);
   }
-  localStorage.setItem('text', JSON.stringify(taskHistory));
-  localStorage.setItem('due-date', JSON.stringify(dueDateHistory));
+  setTask();
+  setTaskDate();
 }
 export function removeTasksLocalStorage(taskId, element) {
-  const taskHistory = JSON.parse(localStorage.getItem('text')) || [];
-  const dueDateHistory = JSON.parse(localStorage.getItem('due-date')) || [];
-  // const content = document.querySelector('#content');
   if (taskId) {
     taskHistory.splice(taskId, 1);
     dueDateHistory.splice(taskId, 1);
-    localStorage.setItem('text', JSON.stringify(taskHistory));
-    localStorage.setItem('due-date', JSON.stringify(dueDateHistory));
-    element.remove();
+    setTask();
+    setTaskDate();
   }
-  // change remaining task id's after deletion
+  element.remove();
 }
 
 export function changeTaskIdAfterDelete() {
-  const content = document.getElementById('content');
-  const getDivElements = content.querySelectorAll('div');
-  for (let i = 0; i < getDivElements.length; i += 1) {
-    getDivElements[i].setAttribute('id', `${i}`);
+  const tasks = document.querySelectorAll('.js-task-container');
+  for (let i = 0; i < tasks.length; i += 1) {
+    tasks[i].setAttribute('id', `${i}`);
   }
 }
-export const getTaskHistory = () => JSON.parse(localStorage.getItem('text'));
