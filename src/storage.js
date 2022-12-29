@@ -1,29 +1,43 @@
-import { setDate } from "date-fns";
-
-export const getTaskHistory = (project = 'inbox') => JSON.parse(localStorage.getItem(`${project}-task`)) || [];
-export const getTaskDateHistory = (project = 'inbox') => JSON.parse(localStorage.getItem(`${project}-task-date`)) || [];
+export const getTaskHistory = (projectName = 'inbox') => JSON.parse(localStorage.getItem(`${projectName}`)) || [];
 const taskHistory = getTaskHistory();
-const dueDateHistory = getTaskDateHistory();
-const setTask = (project = 'inbox') => localStorage.setItem(`${project}-task`, JSON.stringify(taskHistory));
-const setTaskDate = (project = 'inbox') => localStorage.setItem(`${project}-task-date`, JSON.stringify(dueDateHistory));
+export const setProject = (projectName) => localStorage.setItem(`${projectName}`, JSON.stringify(taskHistory));
 
-export function saveTasksLocalStorage(taskInput, taskDueDate, taskId) {
+export function
+saveTasksLocalStorage(
+  taskId = '',
+  taskTitle = '',
+  taskDescription = '',
+  taskDueDate = '',
+  taskPriority = '',
+  taskFinished = false,
+  projectName = 'inbox',
+) {
   if (taskId) {
-    taskHistory.splice(taskId, 1, taskInput);
-    dueDateHistory.splice(taskId, 1, taskDueDate);
+    taskHistory.splice(taskId, 1, {
+      'task-title': taskTitle,
+      'task-description': taskDescription,
+      'task-due-date': taskDueDate,
+      'task-priority': taskPriority,
+      'task-finished': taskFinished,
+    });
+    console.log(taskHistory);
   } else {
-    taskHistory.push(taskInput);
-    dueDateHistory.push(taskDueDate);
+    taskHistory.push({
+      'task-title': taskTitle,
+      'task-description': taskDescription,
+      'task-due-date': taskDueDate,
+      'task-priority': taskPriority,
+      'task-finished': taskFinished,
+    });
+    console.log('getTaskHistory()');
   }
-  setTask();
-  setTaskDate();
+  setProject(projectName);
 }
-export function removeTasksLocalStorage(taskId, element) {
+
+export function removeTasksLocalStorage(taskId, element, projectName = 'inbox') {
   if (taskId) {
     taskHistory.splice(taskId, 1);
-    dueDateHistory.splice(taskId, 1);
-    setTask();
-    setTaskDate();
+    setProject(projectName);
   }
   element.remove();
 }

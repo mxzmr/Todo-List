@@ -4,8 +4,6 @@
 
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
   font-family: 'Poppins', sans-serif;
   }
 
@@ -62,12 +60,12 @@ nav .logo {
   flex-direction: column;
   border-radius: 15px;
   margin-top: 20px;
-  padding: 14px 12px;
-  gap: 25px;
+  /* padding: 14px 12px; */
+  gap: 5px;
   /* background-color: rgb(227, 116, 116); */
   height: 90vh;
   /* height: 100vh; */
-  /* width: 25vw; */
+  width: 25vw;
   grid-area: side-bar;
   color:#707070;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
@@ -79,46 +77,114 @@ nav .logo {
   margin-right: 5px;
 }
 
-#sidebar > *{
+.sidebar_inbox-filters > div{
   display: flex;
-  padding: 14px 12px;
+  /* padding: 10px 12px; */
   align-items: center;
   gap: 10px;
   cursor: pointer;
   /* width: 25vw; */
 }
 
-#sidebar > :hover{
+.sidebar_inbox-filters > div:hover{
   background-color: #4070f4;
   color: white;
   border-radius: 8px;
 }
 
 .js-sidebar__projects{
+  display: flex;
+  flex-direction: column;
+  justify-content:left;
   margin-top: 30px;
+  padding: 10px 0;
   font-size: 22px;
 }
-.js-sidebar__projects:hover{
-  background-color:green;
+
+.js-sidebar__projects input {
+  border: none;
+}
+/* , .js-project-name:hover, .js-project-name:hover::placeholder */
+
+.js-project-form:hover{
+  background-color: #4070f4;
+  color: white;
+  border-radius: 8px;
 }
 
+.js-new-project:hover {
+  background-color: #4070f4;
+  color: white;
+  border-radius: 8px;
+}
+
+.projects{
+  align-self: flex-start;
+  margin-bottom: 13px;
+}
 .js-new-project{
+  /* margin-left: 13px; */
+  /* margin-right: 5px; */
+  padding: 8px 5px;
   margin-left: 13px;
-  margin-right: 5px;
+  /* margin-right: 5px; */
+  margin-top: 10px;
+  /* align-self: flex-start; */
   border: none;
+  border-radius: 8px;
   background-color:inherit;
   text-align: left;
   color:#707070;
+  /* width: 100%; */
 }
 
-/* .overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 1000vh;
-  width: 100%;
-  background-color: rgba(0, 0, 0,  0.6);
-} */
+.js-project-form {
+  display: flex;
+  /* flex-wrap: wrap; */
+  gap: 5px;
+  /* border: black solid; */
+  justify-content: space-between;
+}
+
+.js-delete-project-button, .js-save-project-button {
+  display: none;
+  border: none;
+  font-size: 13px;
+  padding-right: 15PX;
+}
+
+.js-project-form:hover .js-delete-project-button,
+.js-project-form:hover .js-project-name,
+.js-project-form:hover .js-project-name::placeholder{
+  display:block;
+  background-color: inherit;
+  background-color: #4070f4;
+  color: white;
+  outline-color: black solid 1px;
+  outline-width: thin;
+  /* border-radius: 8px; */
+}
+
+.js-project-name:focus ~.js-save-project-button ,.js-project-name:focus ~ .js-delete-project-button {
+  display: block;
+  background-color: inherit;
+  color: white;
+}
+
+.js-project-name {
+  padding: 8px 5px;
+  margin-left: 13px;
+  width: 50%;
+  border: none;
+  background-color: inherit;
+  /* outline:none; */
+  /* margin-top: 10px; */
+}
+
+.js-project-name::placeholder {
+  font-size: 14px;
+  opacity: 0.6;
+}
 
 #content{
   display: flex;
@@ -130,18 +196,25 @@ nav .logo {
   gap: 20px;
 }
 
+.project-name {
+  text-align: center ;
+  height: 1px;
+}
+
 .js-new-task-button {
-  text-align: left;
-  padding-left: 20px;
-  height: 40px;
+  text-align: center;
+  /* padding-left: 20px;
+  height: 40px; */
   background-color: inherit;
   border: none;
-  border-top: solid rgb(71, 71, 71, 0.5) 1px;
-  border-bottom: solid rgb(71, 71, 71, 0.5) 1px;
+  font-size: 45px;
+  /* border-top: solid rgb(71, 71, 71, 0.5) 1px;
+  border-bottom: solid rgb(71, 71, 71, 0.5) 1px; */
 }
 
 .js-new-task-button:hover {
-  background-color: #fff;
+  color: #4070f4;
+  cursor:pointer;
 }
 
 .js-task-container {
@@ -149,8 +222,10 @@ nav .logo {
   gap: 10px;
   padding: 10px 10px;
   background-color: inherit;
-  border-top: solid rgb(71, 71, 71, 0.5) 1px;
+  /* border-top: solid rgb(71, 71, 71, 0.5) 1px;
   border-bottom: solid rgb(71, 71, 71, 0.5) 1px;
+  border-right: solid rgb(71, 71, 71, 0.5) 1px; */
+  border: solid rgb(71, 71, 71, 0.5) 1px;
 }
 
 .js-task-container:hover {
@@ -177,12 +252,23 @@ nav .logo {
   background-color: rgb(198, 213, 255);
 }
 
-.js-task-date {
+/* .js-task-date {
   justify-self: flex-end;
   border: none;
-  /* width: 150px; */
+  width: 150px;
   background-color: inherit;
   outline: none;
+} */
+
+.display-task-due-date {
+  width: 120px;
+  font-size: 12px;
+  align-self: center;
+}
+
+.display-task-priority {
+  font-size: 12px;
+  align-self: center;
 }
 
 .js-task-checkbox {
@@ -191,10 +277,119 @@ nav .logo {
   background-color: inherit;
 }
 
+.js-edit-task-button{
+  width: 30px;
+  border: none;
+  background: inherit;
+  background-image: url(./images/edit-solid-24.png);
+  background-repeat: no-repeat;
+}
+
 .js-delete-task-button {
   border: none;
   background-color: inherit;
-  font-weight: 600;
+  width: 30px;
+  background-image: url(./images/trash-regular-24.png);
+  background-repeat: no-repeat;
+}
+
+.task-modal{
+  
+  width: 500px;
+  background-color: rgb(62, 62, 62);
+  border: 0;
+  box-shadow: 0 0 1em rgb(0 0 0/ .3);
+  color: white;
+  /* max-width: 50ch; */
+  margin-top: 10vh;
+}
+
+.task-modal .task-title, .task-description {
+  border: none;
+  background-color: inherit;
+  overflow: auto;
+  resize: none;
+  color: white;
+}
+.task-modal :focus {
+  outline: none;
+  background-color: inherit;
+  color: white;
+}
+
+.task-title {
+  margin: 15px 0;
+}
+
+.task-description {
+  height: 100%;
+}
+
+.task-modal input[type=text]::placeholder{
+  color:#707070;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 500px;
+}
+
+.task-priority {
+  display: flex;
+  gap: 15px;
+}
+
+.priority-button {
+  width: 100px;
+  text-align: center;
+}
+
+.priority-button label,
+.priority-button input {
+  display: block;
+  cursor:pointer;
+}
+
+input[type=radio]{
+  margin: 0 10px;
+  appearance: none;
+}
+
+
+#priority-low:checked + label, #priority-low:hover + label{
+  background: rgba(0, 128, 0, 0.7);
+  border-radius: 4px;
+}
+#priority-medium:checked + label, #priority-medium:hover + label {
+  background: rgba(255, 166, 0, 0.7);
+  border-radius: 4px;
+}
+#priority-high:checked + label, #priority-high:hover + label {
+  background: rgba(255, 0, 0, 0.7);
+  border-radius: 4px;
+}
+
+#task-date {
+  background-color: inherit;
+  border: #4070f4 solid 2px;
+  border-radius: 4px;
+  outline: none;
+  color: white;
+  margin-left: 10px;
+  text-align: center;
+  padding: 5px;
+  appearance: none;
+}
+::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.task-modal::backdrop{
+  /* background:linear-gradient(45deg, red , blue);
+  opacity: 0.3; */
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 #footer{
