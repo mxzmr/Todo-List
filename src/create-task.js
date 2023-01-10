@@ -1,34 +1,36 @@
-/*
-  add task priority indicator  or text to the task and refactor the code separate functions
-  from inside create task function
-  ********************************
- */
-
 import {
   saveTasksLocalStorage,
   removeTasksLocalStorage,
-  changeTaskIdAfterDelete,
+  updateTaskId,
   getTaskHistory,
 } from './storage';
 import { showModal } from './taskModal';
 
-export function selectTaskItem() {
+export function selectAllTasksItems() {
   const taskContainer = document.querySelectorAll('.js-task-container');
   const taskInput = document.querySelectorAll('.js-task-input');
   const taskCheckBox = document.querySelectorAll('.js-task-checkbox');
   const displayDueDate = document.querySelectorAll('.display-task-due-date');
   const editTaskBtn = document.querySelectorAll('.js-edit-task-button');
-  const displayTaskDate = document.querySelectorAll('.display-task-due-date');
   const taskText = document.querySelectorAll('.js-task-input');
+  const taskForm = document.querySelectorAll('.js-task-form');
   return {
     taskContainer,
     taskInput,
     taskCheckBox,
     displayDueDate,
     editTaskBtn,
-    displayTaskDate,
     taskText,
+    taskForm,
   };
+}
+
+export function checkEmptyTasks() {
+  const taskInput = document.querySelectorAll('.js-task-input');
+  for (let i = 0; i < taskInput.length; i += 1) {
+    if (!taskInput[i].value) return true;
+  }
+  return false;
 }
 
 function createTaskId(taskContainer) {
@@ -37,23 +39,24 @@ function createTaskId(taskContainer) {
 }
 
 export function changeTaskStatus(taskStatus, id) {
-  // const taskContainer = document.querySelectorAll('.js-task-container');
-  // const taskInput = document.querySelectorAll('.js-task-input');
-  // const editTaskBtn = document.querySelectorAll('.js-edit-task-button');
+  const {
+    taskContainer,
+    taskInput,
+    editTaskBtn,
+  } = selectAllTasksItems();
   if (taskStatus) {
-    selectTaskItem().taskContainer[id].style.opacity = '0.4';
-    selectTaskItem().taskInput[id].disabled = true;
-    selectTaskItem().editTaskBtn[id].disabled = true;
+    taskContainer[id].style.opacity = '0.4';
+    taskInput[id].disabled = true;
+    editTaskBtn[id].disabled = true;
   } else {
-    selectTaskItem().taskContainer[id].style.opacity = '1';
-    selectTaskItem().taskInput[id].disabled = false;
-    selectTaskItem().editTaskBtn[id].disabled = false;
+    taskContainer[id].style.opacity = '1';
+    taskInput[id].disabled = false;
+    editTaskBtn[id].disabled = false;
   }
 }
 
-export function createTask(task, taskDescription, date, taskPriority) {
-  const content = document.querySelector('#content');
-  const addTaskBtn = document.querySelector('.js-new-task-button');
+export function renderTask() {
+  const taskSection = document.querySelector('.js-task-section');
   const taskContainer = document.createElement('div');
   const taskForm = document.createElement('form');
   const taskInput = document.createElement('input');
@@ -62,8 +65,7 @@ export function createTask(task, taskDescription, date, taskPriority) {
   const displayPriority = document.createElement('span');
   const editTaskBtn = document.createElement('button');
   const deleteTaskBtn = document.createElement('button');
-  content.appendChild(taskContainer);
-  taskContainer.after(addTaskBtn);
+  taskSection.appendChild(taskContainer);
   taskContainer.classList.add('js-task-container');
   taskContainer.append(displayPriority, taskForm, displayDueDate, editTaskBtn, deleteTaskBtn);
   taskForm.classList.add('js-task-form');
@@ -77,30 +79,57 @@ export function createTask(task, taskDescription, date, taskPriority) {
   displayDueDate.classList.add('display-task-due-date');
   displayPriority.classList.add('display-task-priority');
   taskInput.before(taskCheckBox);
-  taskInput.focus();
+  return {
+    taskContainer,
+    taskInput,
+    taskCheckBox,
+    displayDueDate,
+    editTaskBtn,
+    deleteTaskBtn,
+    taskForm,
+  };
+}
+
+/* save new tasks to each project separately */
+export function createTask(project) {
+  const {
+    taskContainer,
+    taskInput,
+    taskCheckBox,
+    displayDueDate,
+    editTaskBtn,
+    deleteTaskBtn,
+    taskForm,
+  } = renderTask();
   createTaskId(taskContainer);
   function taskEventHandler(e) {
     e.preventDefault();
-    saveTasksLocalStorage(
-      taskContainer.id,
-      taskInput.value,
-      taskDescription,
-      date,
-      taskPriority,
-      taskCheckBox.checked,
-    );
-    taskInput.blur();
+    if (taskInput.value) {
+      // If task-due-date and task-priority are undefined, assign an empty string to them.
+      const dueDate = getTaskHistory()[taskContainer.id] ? getTaskHistory()[taskContainer.id]['task-due-date'] : '';
+      const priority = getTaskHistory()[taskContainer.id] ? getTaskHistory()[taskContainer.id]['task-priority'] : '';
+      saveTasksLocalStorage({
+        project,
+        taskId: taskContainer.id,
+        taskTitle: taskInput.value,
+        taskDescription: '',
+        taskDueDate: dueDate,
+        taskPriority: priority,
+        taskFinished: taskCheckBox.checked,
+      });
+      taskInput.blur();
+    }
   }
   taskContainer.addEventListener('submit', (e) => taskEventHandler(e));
   taskForm.addEventListener('focusout', (e) => taskEventHandler(e));
   editTaskBtn.addEventListener('click', () => showModal(taskContainer.id));
+  displayDueDate.addEventListener('click', () => showModal(taskContainer.id));
   deleteTaskBtn.addEventListener('click', () => {
     removeTasksLocalStorage(taskContainer.id, taskContainer);
-    changeTaskIdAfterDelete();
+    updateTaskId();
   });
-  taskCheckBox.addEventListener('change', () => {
-    taskEventHandler();
+  taskCheckBox.addEventListener('change', (e) => {
+    taskEventHandler(e);
     changeTaskStatus(taskCheckBox.checked, taskContainer.id);
-    // console.log(e);
   });
 }

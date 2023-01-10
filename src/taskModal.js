@@ -22,6 +22,7 @@ export function getTaskPriority() {
   }
   return checkedPriority;
 }
+
 export function displayTaskPriority(priority, id) {
   const taskContainer = document.querySelectorAll('.js-task-container');
   if (priority === 'low') taskContainer[id].style.borderLeft = 'solid green 4px';
@@ -29,30 +30,29 @@ export function displayTaskPriority(priority, id) {
   if (priority === 'high') taskContainer[id].style.borderLeft = 'solid red 4px';
 }
 
-// check why moving the two const outside this function throws an error ****************************
-function updateTask() {
+export function updateTask(id) {
   const displayTaskDate = document.querySelectorAll('.display-task-due-date');
   const taskText = document.querySelectorAll('.js-task-input');
-  taskText[taskModal.id].value = taskTitle.value;
-  displayTaskDate[taskModal.id].textContent = taskDueDate.value;
-  displayTaskPriority(getTaskPriority(), taskModal.id);
+  taskText[id].value = taskTitle.value;
+  displayTaskDate[id].textContent = taskDueDate.value;
+  displayTaskPriority(getTaskPriority(), id);
 }
 
-export function editTask() {
+export function editTaskModal(project) {
   saveModalBtn.addEventListener('click', (e) => {
     const taskCheckBox = document.querySelectorAll('.js-task-checkbox');
-    // console.log(TaskCheckBox);
     e.preventDefault();
-    saveTasksLocalStorage(
-      taskModal.id,
-      taskTitle.value,
-      taskDescription.value,
-      taskDueDate.value,
-      getTaskPriority(),
-      taskCheckBox[taskModal.id].checked,
-    );
+    saveTasksLocalStorage({
+      projectName: project,
+      taskId: taskModal.id,
+      taskTitle: taskTitle.value,
+      taskDescription: taskDescription.value,
+      taskDueDate: taskDueDate.value,
+      taskPriority: getTaskPriority(),
+      taskFinished: taskCheckBox[taskModal.id].checked,
+    });
     taskModal.close();
-    updateTask();
+    updateTask(taskModal.id);
   });
   closeModal.addEventListener('click', () => taskModal.close());
 }
@@ -60,16 +60,25 @@ export function editTask() {
 export function showModal(id) {
   taskModal.showModal();
   taskModal.setAttribute('id', `${id}`);
-  taskTitle.value = getTaskHistory()[id]['task-title'];
-  taskDescription.value = getTaskHistory()[id]['task-description'];
-  taskDueDate.value = getTaskHistory()[id]['task-due-date'];
-  if (taskPriorityLow.value === getTaskHistory()[id]['task-priority']) {
-    taskPriorityLow.checked = true;
-  } else taskPriorityLow.checked = false;
-  if (taskPriorityMedium.value === getTaskHistory()[id]['task-priority']) {
-    taskPriorityMedium.checked = true;
-  } else taskPriorityMedium.checked = false;
-  if (taskPriorityHigh.value === getTaskHistory()[id]['task-priority']) {
-    taskPriorityHigh.checked = true;
-  } else taskPriorityHigh.checked = false;
+  if (getTaskHistory()[id]) {
+    taskTitle.value = getTaskHistory()[id]['task-title'];
+    taskDescription.value = getTaskHistory()[id]['task-description'];
+    taskDueDate.value = getTaskHistory()[id]['task-due-date'];
+    if (taskPriorityLow.value === getTaskHistory()[id]['task-priority']) {
+      taskPriorityLow.checked = true;
+    } else taskPriorityLow.checked = false;
+    if (taskPriorityMedium.value === getTaskHistory()[id]['task-priority']) {
+      taskPriorityMedium.checked = true;
+    } else taskPriorityMedium.checked = false;
+    if (taskPriorityHigh.value === getTaskHistory()[id]['task-priority']) {
+      taskPriorityHigh.checked = true;
+    } else taskPriorityHigh.checked = false;
+  } else {
+    taskTitle.value = '';
+    taskDescription.value = '';
+    taskDueDate.value = '';
+    taskPriorityLow.checked = false;
+    taskPriorityMedium.checked = false;
+    taskPriorityHigh.checked = false;
+  }
 }

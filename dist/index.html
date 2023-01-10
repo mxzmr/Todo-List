@@ -11,22 +11,21 @@
   <title>Document</title>
 </head>
 <body>
-  <nav>
   <div class="logo">
     <i class='bx bx-menu menu-icon'></i>
     <span class="logo-name">TodoList</span>
   </div>
   <div id="sidebar">
     <div class="sidebar_inbox-filters">
-      <div class="sidebar__inbox">
+      <div class="js-sidebar__inbox">
         <i class="gg-inbox"></i>
         <p>Inbox</p>
       </div>
-      <div class="sidebar__today">
+      <div class="js-sidebar__today">
         <i class="gg-calendar-today"></i>
         <p>Today</p>
       </div>
-      <div class="sidebar__seven-days">
+      <div class="js-sidebar__seven-days">
         <i class="gg-calendar-dates"></i>
         <p>Next 7 Days</p>
       </div>
@@ -39,9 +38,11 @@
       <button type="button" class="js-new-project">+ New Project</button>
     </div>
   </div>
-</nav>
 <div id="content">
-    <div class="project-name">Inbox</div>
+    <div class="project-header">Inbox</div>
+    <div class="js-task-section">
+      
+    </div>
     <button class="js-new-task-button" id="task-button">+</button>
     <dialog class="task-modal">
       <form action="" class="modal-form">

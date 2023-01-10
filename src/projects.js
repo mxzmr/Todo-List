@@ -1,37 +1,36 @@
-import { createTask } from './create-task';
-import { saveTasksLocalStorage, removeTasksLocalStorage, changeTaskIdAfterDelete, getTaskHistory, setProject } from './storage';
+// import { createTask } from './create-task';
+import {
+  getTaskHistory,
+  setProject,
+  setProjectNames,
+  getProjectNames,
+} from './storage';
 
-/**
- * *********************************************************************
- * figure out how to enable focus out and submit event handlers to work together
- * without infinite loop with checkProjectNameValidity(project)
-*/
+import { displayInbox } from './display-module';
 
-const newProjectBtb = document.querySelector('.js-new-project');
-// const getProjectNames = document.querySelectorAll('.project-name');
-function checkProjectNameValidity(project) {
-  if (!project.value) {
-    // alert('Enter project name');
-    newProjectBtb.disabled = true;
-    // project.focus();
-  } else {
-    newProjectBtb.disabled = false;
-    project.blur();
+const newTaskBtn = document.querySelector('.js-new-task-button');
+let projectNames = getProjectNames();
+const checkIfProjectExists = (newProject) => {
+  const duplicates = [];
+  if (projectNames) {
+    projectNames.map((project) => {
+      if (newProject === project) duplicates.push(project);
+      return duplicates;
+    });
   }
-}
-
-const getProjectName = (project) => project.value;
+  return duplicates.length > 0;
+};
 
 export function checkEmptyProjectNames() {
   const projectNamesAll = document.querySelectorAll('.js-project-name');
   for (let i = 0; i < projectNamesAll.length; i += 1) {
-    if (!projectNamesAll[i].value) {
-      newProjectBtb.disabled = true;
-    } else newProjectBtb.disabled = false;
-  }
+    if (!projectNamesAll[i].value) return true;
+  } return false;
 }
 
-export function createProject() {
+function renderProjects() {
+  const newProjectBtb = document.querySelector('.js-new-project');
+  const projectHeader = document.querySelector('.project-header');
   const projects = document.querySelector('.js-sidebar__projects');
   const projectInputForm = document.createElement('form');
   const projectName = document.createElement('input');
@@ -42,30 +41,68 @@ export function createProject() {
   projectInputForm.append(projectName, saveButton, deleteButton);
   projectName.classList.add('js-project-name');
   projectName.placeholder = 'Project Name';
+  projectName.type = 'text';
   saveButton.classList.add('js-save-project-button');
-  deleteButton.classList.add('js-delete-project-button');
   saveButton.textContent = 'Save';
+  saveButton.type = 'submit';
+  deleteButton.classList.add('js-delete-project-button');
   deleteButton.textContent = 'X';
   deleteButton.type = 'button';
   projectInputForm.after(newProjectBtb);
-  projectName.focus();
+  return {
+    projectHeader,
+    projectInputForm,
+    projectName,
+    saveButton,
+    deleteButton,
+  };
+}
+
+export function createProject(project) {
+  const {
+    projectHeader,
+    projectInputForm,
+    projectName,
+    deleteButton,
+  } = renderProjects();
+  projectName.value = project || '';
+  projectName.type = projectName.value ? 'button' : 'text';
   projectInputForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    checkProjectNameValidity(projectName);
     if (!projectName.value) projectName.style.border = 'solid red 1px';
-    else projectName.style.border = 'none';
-    projectName.disabled = true;
-    setProject(projectName.value);
-    projectInputForm.blur();
+    else if (!checkIfProjectExists(projectName.value)) {
+      projectName.style.border = 'none';
+      projectName.style.width = '100%';
+      projectName.type = 'button';
+      projectHeader.textContent = projectName.value;
+      newTaskBtn.style.display = 'block';
+      projectNames.push(projectName.value);
+      setProjectNames(projectNames);
+      setProject(getTaskHistory(projectName.value), projectName.value);
+      displayInbox(getTaskHistory(projectName.value));
+      projectInputForm.blur();
+    }
   });
+  projectName.addEventListener('click', (event) => {
+    if (checkIfProjectExists(projectName.value)) {
+      projectHeader.textContent = projectName.value;
+      newTaskBtn.style.display = 'block';
+      displayInbox(getTaskHistory(event.target.value));
+    }
+  });
+  // delete project and set the dom to default index tasks
   deleteButton.addEventListener('click', (e) => {
     e.target.parentNode.remove();
-    newProjectBtb.disabled = false;
+    window.localStorage.removeItem(projectName.value);
+    // Remove and update deleted project from projectNames array
+    projectNames = projectNames.filter((name) => name !== projectName.value);
+    setProjectNames(projectNames);
+    projectHeader.textContent = 'Inbox';
+    newTaskBtn.style.display = 'block';
+    displayInbox(getTaskHistory('Inbox'));
   });
+}
 
-  projectInputForm.addEventListener('click', () => console.log(projectName.value));
-  // projectName.addEventListener('focusout', () => {
-  //   if (!projectName.value) projectName.style.border = 'solid red 1px';
-  //   else projectName.style.border = 'none';
-  // });
+export function displayProjects() {
+  getProjectNames().map((project) => createProject(project));
 }
