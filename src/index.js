@@ -29,7 +29,7 @@ weeklyFilter.addEventListener('click', () => {
 });
 
 newTaskBtn.addEventListener('click', () => {
-  if (!checkEmptyTasks()) createTask();
+  if (!checkEmptyTasks()) createTask(projectHeader.textContent);
 });
 newProjectBtn.addEventListener('click', () => {
   if (!checkEmptyProjectNames()) {

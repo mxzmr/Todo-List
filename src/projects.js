@@ -78,7 +78,7 @@ export function createProject(project) {
       newTaskBtn.style.display = 'block';
       projectNames.push(projectName.value);
       setProjectNames(projectNames);
-      setProject(getTaskHistory(projectName.value), projectName.value);
+      setProject(projectName.value, getTaskHistory(projectName.value));
       displayInbox(getTaskHistory(projectName.value));
       projectInputForm.blur();
     }

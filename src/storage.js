@@ -9,7 +9,7 @@ export const setWeeklyTasks = (tasks) => localStorage.setItem('Weekly', JSON.str
 
 export function
 saveTasksLocalStorage({
-  projectName = projectHeader.textContent,
+  projectName = '',
   taskId = '',
   taskTitle = '',
   taskDescription = '',
@@ -17,7 +17,7 @@ saveTasksLocalStorage({
   taskPriority = '',
   taskFinished = false,
 }) {
-  const taskHistory = getTaskHistory();
+  const taskHistory = getTaskHistory(projectName);
   if (taskId) {
     taskHistory.splice(taskId, 1, {
       project: projectName,
@@ -43,8 +43,8 @@ saveTasksLocalStorage({
   sortLocalStorage();
 }
 
-export function removeTasksLocalStorage(taskId, element, projectName = projectHeader.textContent) {
-  const taskHistory = getTaskHistory();
+export function removeTasksLocalStorage(projectName, taskId, element) {
+  const taskHistory = getTaskHistory(projectName);
   if (taskId) {
     taskHistory.splice(taskId, 1);
     setProject(projectName, taskHistory);
@@ -52,13 +52,12 @@ export function removeTasksLocalStorage(taskId, element, projectName = projectHe
   element.remove();
 }
 
-export function updateTaskId() {
-  // I have three taskHistory variables in separate functions to refresh the array with new data
-  const taskHistory = getTaskHistory();
+export function updateTaskId(project) {
+  const taskHistory = getTaskHistory(project);
   const tasks = document.querySelectorAll('.js-task-container');
   for (let i = 0; i < tasks.length; i += 1) {
+    if (taskHistory) taskHistory[i]['task-id'] = `${i}`;
     tasks[i].setAttribute('id', `${i}`);
-    taskHistory[i]['task-id'] = `${i}`;
   }
   setProject(undefined, taskHistory);
 }

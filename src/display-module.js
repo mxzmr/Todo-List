@@ -1,8 +1,5 @@
 import { createTask, changeTaskStatus, selectAllTasksItems } from './create-task';
-import { editTaskModal, displayTaskPriority } from './taskModal';
-import { updateTaskId } from './storage';
-
-const projectHeader = document.querySelector('.project-header');
+import { displayTaskPriority } from './taskModal';
 
 export function displayInbox(project) {
   const taskSection = document.querySelector('.js-task-section');
@@ -19,15 +16,12 @@ export function displayInbox(project) {
       taskInput[id].value = task['task-title'];
       displayDueDate[id].textContent = task['task-due-date'];
       taskCheckBox[id].checked = task['task-finished'];
-      // taskContainer[id].setAttribute('id', `${task['task-id']}`);
+      taskContainer[id].setAttribute('id', `${task['task-id']}`);
       taskInput[id].blur();
       displayTaskPriority(task['task-priority'], id);
       changeTaskStatus(task['task-finished'], id);
       return undefined;
     });
-    // Filters don't need to change task id
-    if (projectHeader.textContent !== 'Today' && projectHeader.textContent !== 'Next 7 Days') updateTaskId();
-    editTaskModal();
   }
 }
 
@@ -41,12 +35,10 @@ export function getTodayTasks() {
       return undefined;
     });
   });
-  // setTodayTasks(todayTasks);
   return todayTasks;
 }
 
 export function getNextWeekTasks() {
-  // const getWeeklyTasks = localStorage.getItem('Weekly');
   const todayDate = new Date();
   const todayDateFormatted = new Date().toISOString().slice(0, 10);
   const nextWeek = new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() + 7);
@@ -62,12 +54,5 @@ export function getNextWeekTasks() {
       return undefined;
     });
   });
-  // console.log(getWeeklyTasks);
-  // if (!selectAllTasksItems().taskInput.value) setWeeklyTasks(nextWeekTasks);
   return nextWeekTasks;
-}
-
-function findTaskInStorage() {
-  // find this specific task in the local storage by using the project name and task id
-  // then splice the old task with the new task
 }

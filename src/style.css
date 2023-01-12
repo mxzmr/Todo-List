@@ -5,7 +5,6 @@
 * {
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
-  /* background-color: #181A1B; */
   }
 
   :root{
@@ -39,7 +38,6 @@ body {
   align-items: center;
   color: var(--nav-text-color);
   margin: 0 24px;
-  /* height: 100%; */
   grid-area: nav;
 }
 
@@ -61,7 +59,6 @@ body {
 #sidebar{
   display: flex;
   flex-direction: column;
-  /* border-radius: 15px; */
   gap: 5px;
   grid-area: side-bar;
   background-color: var(--sidebar-bg-color);
@@ -100,7 +97,6 @@ body {
 .js-sidebar__projects input {
   border: none;
 }
-/* , .js-project-name:hover, .js-project-name:hover::placeholder */
 
 .js-project-form:hover, .js-new-project:hover{
   background-color: #4070f4;
@@ -213,7 +209,6 @@ body {
   color: var(--content-text-color);
   gap: 10px;
   padding: 10px 10px;
-  /* background-color: inherit; */
   border: solid rgb(71, 71, 71, 0.5) 1px;
 }
 
@@ -240,7 +235,6 @@ body {
 }
 .js-task-input:focus{
   outline:none;
-  /* background-color: #282B2D; */
 }
 
 .display-task-due-date {
@@ -262,7 +256,7 @@ body {
   background-color: transparent;
   background-image: url(./images/edit-solid-24.png);
   filter: invert(50%);
-  /* background-repeat: no-repeat; */
+  background-repeat: no-repeat;
 }
 
 .js-delete-task-button {

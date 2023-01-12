@@ -1,11 +1,11 @@
 import { saveTasksLocalStorage, getTaskHistory } from './storage';
 
 const taskModal = document.querySelector('.task-modal');
+const projectName = document.querySelector('.modal-project-name');
 const taskTitle = document.querySelector('.task-title');
 const taskDescription = document.querySelector('.task-description');
 const taskDueDate = document.querySelector('#task-date');
 const closeModal = document.querySelector('.modal-close');
-const saveModalBtn = document.querySelector('.task-submit');
 const taskPriorityLow = document.getElementById('priority-low');
 const taskPriorityMedium = document.getElementById('priority-medium');
 const taskPriorityHigh = document.getElementById('priority-high');
@@ -30,18 +30,24 @@ export function displayTaskPriority(priority, id) {
   if (priority === 'high') taskContainer[id].style.borderLeft = 'solid red 4px';
 }
 
-export function updateTask(id) {
+export function updateTask(project, id) {
   const displayTaskDate = document.querySelectorAll('.display-task-due-date');
   const taskText = document.querySelectorAll('.js-task-input');
-  taskText[id].value = taskTitle.value;
-  displayTaskDate[id].textContent = taskDueDate.value;
-  displayTaskPriority(getTaskPriority(), id);
+  const container = document.querySelectorAll('.js-task-container');
+  for (let i = 0; i < container.length; i += 1) {
+    if (container[i].id === id && container[i].dataset.project === project) {
+      taskText[i].value = getTaskHistory(project)[id]['task-title'];
+      displayTaskDate[i].textContent = getTaskHistory(project)[id]['task-due-date'];
+      displayTaskPriority(getTaskPriority(project), i);
+      return;
+    }
+  }
 }
 
-export function editTaskModal(project) {
-  saveModalBtn.addEventListener('click', (e) => {
-    const taskCheckBox = document.querySelectorAll('.js-task-checkbox');
+function createEventListenersForModal(project) {
+  taskModal.addEventListener('submit', (e) => {
     e.preventDefault();
+    const taskCheckBox = document.querySelectorAll('.js-task-checkbox');
     saveTasksLocalStorage({
       projectName: project,
       taskId: taskModal.id,
@@ -51,26 +57,28 @@ export function editTaskModal(project) {
       taskPriority: getTaskPriority(),
       taskFinished: taskCheckBox[taskModal.id].checked,
     });
+    updateTask(project, taskModal.id);
     taskModal.close();
-    updateTask(taskModal.id);
-  });
+  }, { once: true });
   closeModal.addEventListener('click', () => taskModal.close());
 }
 
-export function showModal(id) {
+export function showModal(project, id) {
+  const taskHistory = getTaskHistory(project);
   taskModal.showModal();
   taskModal.setAttribute('id', `${id}`);
-  if (getTaskHistory()[id]) {
-    taskTitle.value = getTaskHistory()[id]['task-title'];
-    taskDescription.value = getTaskHistory()[id]['task-description'];
-    taskDueDate.value = getTaskHistory()[id]['task-due-date'];
-    if (taskPriorityLow.value === getTaskHistory()[id]['task-priority']) {
+  if (getTaskHistory(project)[id]) {
+    projectName.textContent = project;
+    taskTitle.value = taskHistory[id]['task-title'];
+    taskDescription.value = taskHistory[id]['task-description'];
+    taskDueDate.value = taskHistory[id]['task-due-date'];
+    if (taskPriorityLow.value === taskHistory[id]['task-priority']) {
       taskPriorityLow.checked = true;
     } else taskPriorityLow.checked = false;
-    if (taskPriorityMedium.value === getTaskHistory()[id]['task-priority']) {
+    if (taskPriorityMedium.value === taskHistory[id]['task-priority']) {
       taskPriorityMedium.checked = true;
     } else taskPriorityMedium.checked = false;
-    if (taskPriorityHigh.value === getTaskHistory()[id]['task-priority']) {
+    if (taskPriorityHigh.value === taskHistory[id]['task-priority']) {
       taskPriorityHigh.checked = true;
     } else taskPriorityHigh.checked = false;
   } else {
@@ -81,4 +89,5 @@ export function showModal(id) {
     taskPriorityMedium.checked = false;
     taskPriorityHigh.checked = false;
   }
+  createEventListenersForModal(project);
 }
